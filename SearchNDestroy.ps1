@@ -1,13 +1,14 @@
 ﻿#   O365 Compliance Search and Destroy)
 # Finds specified email content through compliance search and executes a soft delete of results
-    Write-Host "   _____                     _                      _____            _                   "
-    Write-Host "  / ____|                   | |          ___       |  __ \          | |                    "
+    	Write-Host "   _____                     _                      _____            _                   "
+    	Write-Host "  / ____|                   | |          ___       |  __ \          | |                    "
 	Write-Host " | (___   ___  __ _ _ __ ___| |__       ( _ )      | |  | | ___  ___| |_ _ __ ___  _   _   "
 	Write-Host "  \___ \ / _ \/ _' | '__/ __| '_ \      / _ \/\    | |  | |/ _ \/ __| __| '__/ _ \| | | |  "
 	Write-Host "  ____) |  __/ (_| | | | (__| | | |    | (_>  <    | |__| |  __/\__ \ |_| | | (_) | |_| |  "
 	Write-Host " |_____/ \___|\__,_|_|  \___|_| |_|     \___/\/    |_____/ \___||___/\__|_|  \___/ \__, |  "
-	Write-Host "                                                             _________________________/ |  "
-	Write-Host "                                                            |@xBurningGiraffe    |____/"
+	Write-Host "                                                                                     / /  "
+	Write-Host "                                                                                    /_/  "
+	Write-Host " @xBurningGiraffe                                                                                   
 	Write-Host "================================================================================================"
 
 
@@ -101,30 +102,3 @@ $ThisSearchResults = $ThisSearch.SuccessResults;
         Write-Host "==========================================================================="
         Disconnect-ExchangeOnline
     }
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
