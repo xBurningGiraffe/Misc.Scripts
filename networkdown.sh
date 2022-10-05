@@ -9,10 +9,10 @@ count1=$(ping -c 5 $TARGET_IP1 | grep from* | wc -l)
 count2=$(ping -c 5 $TARGET_IP2 | grep from* | wc -l)
 
 if [ $count1 -eq 0 ] ; then
-    /sbin/shutdown -r 0
+    /sbin/reboot
 elif
     [ $count2 -eq 0 ] ; then
-    /sbin/shutdown -r 0
+    /sbin/reboot
 else
 # Network is up
     :
