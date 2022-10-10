@@ -8,3 +8,4 @@ echo "0 */2 * * * /opt/rader/networkdown.sh" >> mycron
 crontab mycron
 rm -f mycron
 rm -f networkjob.sh
+crontab -l
