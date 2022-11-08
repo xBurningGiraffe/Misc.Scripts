@@ -12,10 +12,7 @@ chmod a+x install.sh
 ./install.sh
 rm -rf /tmp/lt11_install
 
-# Logstash installs
-/usr/share/logstash/bin/logstash-plugin install logstash-integration-zeromq
-/usr/share/logstash/bin/logstash-plugin install logstash-output-influxdb; systemctl restart logstash
-
+# networkcheck install
 wget https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/networkjob.sh
 chmod +x networkjob.sh
 ./networkjob.sh
