@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo yum -y install perch_siem tcpdump nmap wget unzip # Installs
+sudo yum -y install perch_siem tcpdump nmap unzip # Installs
 
 #LT install
 sudo curl https://labtech.radersolutions.com/lt.sh | sh
@@ -9,5 +9,6 @@ sudo curl https://labtech.radersolutions.com/lt.sh | sh
 wget https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/networkjob.sh
 chmod +x networkjob.sh
 ./networkjob.sh
+rm -f siemconfig.sh
 
 
