@@ -12,7 +12,7 @@ chmod a+x install.sh
 rm -rf /tmp/lt11_install
 
 
-yum -y install perch_siem # Install SIEM
+sudo yum -y install perch_siem tcpdump nmap wget
 
 /usr/share/logstash/bin/logstash-plugin install logstash-integration-zeromq
 /usr/share/logstash/bin/logstash-plugin install logstash-output-influxdb; systemctl restart logstash
@@ -20,3 +20,5 @@ yum -y install perch_siem # Install SIEM
 wget https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/networkjob.sh
 chmod +x networkjob.sh
 ./networkjob.sh
+
+
