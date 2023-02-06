@@ -7,7 +7,7 @@ $Settings = New-ScheduledTaskSettingsSet
 # $Principal = New-ScheduledTaskPrincipal -UserID "$env:UserDomain\$env:Username"
 $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
 $CheckTask = Get-ScheduledTask -TaskName 'RestartService'
-if ($null -eq $CheckTask)_{
+if ($null -eq $CheckTask) {
 Register-ScheduledTask -TaskName 'RestartService' -InputObject $Task
 }
 }
