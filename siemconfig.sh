@@ -21,10 +21,13 @@ sudo wget -O $dir_path/networkcheck.sh https://raw.githubusercontent.com/xBurnin
 sudo chmod +x $dir_path/networkcheck.sh
 
 # Cronjob for networkcheck.sh
-crontab -l > mycron
-echo "0 */2 * * * $dir_path/networkcheck.sh" >> mycron
-crontab mycron
-rm mycron
+if crontab -l | grep -q "$dir_path/networkcheck.sh"; then
+  echo "Cron job already exists"
+else
+  crontab -l > mycron
+  echo "0 */2 * * * $dir_path/networkcheck.sh" >> mycron
+  crontab mycron
+  rm mycron
 
-echo "Proceed with installing Labtech"
-
+  echo "Proceed with installing Labtech"
+fi
