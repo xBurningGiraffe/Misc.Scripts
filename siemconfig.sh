@@ -9,10 +9,9 @@ dir_path="/opt/rader"
 if [ -d "$dir_path" ]; then
   echo "Directory already exists: $dir_path"
 else
+# Create RADER directory
   sudo mkdir -p $dir_path
-  
   sudo chmod 755 $dir_path
-  
   sudo chown -R $USER:$USER $dir_path
 fi
 
