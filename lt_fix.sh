@@ -10,6 +10,7 @@ cd LTechAgent && chmod a+x install.sh
 sudo sh install.sh
 sudo systemctl daemon-reload
 sudo systemctl start ltechagent
+sudo systemctl enable ltechagent
 sudo systemctl status ltechagent
 #!/bin/bash
 
