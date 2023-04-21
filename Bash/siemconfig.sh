@@ -16,7 +16,7 @@ else
 fi
 
 # networkcheck install
-sudo wget -O $dir_path/networkcheck.sh https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/networkcheck.sh
+sudo wget -O $dir_path/networkcheck.sh https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/Bash/networkcheck.sh
 sudo chmod +x $dir_path/networkcheck.sh
 
 # Cronjob for networkcheck.sh
