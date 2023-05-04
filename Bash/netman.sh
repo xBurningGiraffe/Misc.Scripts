@@ -1,13 +1,18 @@
+sudo bash -c 'cat << EOF > add_dns_none.sh
 #!/bin/bash
 
 # Define the file path to the NetworkManager.conf file
 nm_conf="/etc/NetworkManager/NetworkManager.conf"
 
 # Add the dns=none line to the [main] section
-sed -i '/^\[main\]$/a dns=none' $nm_conf
+sed -i "/^\[main\]$/a dns=none" $nm_conf
 
 # Restart the NetworkManager service
 systemctl restart NetworkManager.service
 
 # Print a message to indicate the script has finished
-# echo "Added 'dns=none' to the [main] section in $nm_conf and restarted the NetworkManager service."
+echo "Added 'dns=none' to the [main] section in $nm_conf and restarted the NetworkManager service."
+EOF'
+
+sudo chmod +x add_dns_none.sh
+sudo ./add_dns_none.sh
