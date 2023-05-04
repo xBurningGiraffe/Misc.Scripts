@@ -13,6 +13,3 @@ systemctl restart NetworkManager.service
 # Print a message to indicate the script has finished
 echo "Added 'dns=none' to the [main] section in $nm_conf and restarted the NetworkManager service."
 EOF'
-
-sudo chmod +x add_dns_none.sh
-sudo ./add_dns_none.sh
