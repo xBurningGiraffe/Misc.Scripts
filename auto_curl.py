@@ -1,3 +1,4 @@
+import argparse
 import re
 import subprocess
 
@@ -19,10 +20,7 @@ def run_curl(ip, port, output_file):
     curl_command = f'curl -s -o {output_file} {ip}:{port}'
     subprocess.run(curl_command, shell=True)
 
-def main():
-    nmap_file = 'path/to/nmap_file.xml'
-    output_file = 'output.txt'
-
+def main(nmap_file, output_file):
     ips_and_ports = get_ips_and_ports(nmap_file)
 
     with open(output_file, 'w') as file:
@@ -34,4 +32,9 @@ def main():
     print(f"Results written to '{output_file}'.")
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Retrieve IPs and open ports from an nmap file and run curl for each IP and port combination.')
+    parser.add_argument('nmap_file', help='Path to the nmap file')
+    parser.add_argument('output_file', help='Path to the output file')
+    args = parser.parse_args()
+
+    main(args.nmap_file, args.output_file)
