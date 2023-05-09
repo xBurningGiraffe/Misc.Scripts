@@ -49,4 +49,3 @@ for username in usernames:
                     break
                 else:
                     captcha = solve_captcha(response)
-                time.sleep(1)  # Delay of 1 second between requests
