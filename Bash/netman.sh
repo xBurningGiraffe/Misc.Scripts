@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Backup the NetworkManager.conf file
-sudo cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
+sudo cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.old
 
 # Add the dns=none line to the [main] section in NetworkManager.conf
 sudo sed -i '/^\[main\]$/a dns=none' /etc/NetworkManager/NetworkManager.conf
