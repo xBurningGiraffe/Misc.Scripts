@@ -26,8 +26,11 @@ def parse_json(json_data):
     references = cna.get('references', [])
     detail['references'] = [ref.get('url', '') for ref in references]
 
-    detail['locale'] = cna.get('descriptions', [{}])[0].get('lang', '')
-    detail['title'] = cve_metadata.get('cveId', '')
+    # Always include the 'locale' and 'title' fields
+    detail['locale'] = cna.get('descriptions', [{}])[
+        0].get('lang', '') or 'N/A'
+    detail['title'] = cve_metadata.get('cveId', '') or 'N/A'
+
     detail['vulnType'] = cna.get('problemTypes', [{}])[0].get(
         'descriptions', [{}])[0].get('description', '')
     detail['description'] = cna.get('descriptions', [{}])[0].get('value', '')
