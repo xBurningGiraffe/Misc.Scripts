@@ -3,8 +3,8 @@
 if ! pgrep -x "ltechagent" > /dev/null
 then
     echo "ltechagent is not running. Restarting..."
-    systemctl restart ltechagent
-    systemctl daemon-reload
+    sudo systemctl restart ltechagent
+    sudo systemctl daemon-reload
 else
     echo "ltechagent is already running."
 fi
