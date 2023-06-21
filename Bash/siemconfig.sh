@@ -23,7 +23,7 @@ else
     sudo cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
     
     # Use sed to add the "dns=none" line at the end of the file
-    sudo sed -i '$ a dns=none' /etc/NetworkManager/NetworkManager.conf
+    sudo sed -i '/^\[main\]$/a dns=none' /etc/NetworkManager/NetworkManager.conf
     
     echo "The 'dns=none' line has been added to NetworkManager.conf."
 fi
