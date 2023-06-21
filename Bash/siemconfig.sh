@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo yum -y install wget perch_siem tcpdump nmap unzip # Installs
+sudo yum install wget perch_siem tcpdump nmap unzip -y # Installs
 
 # RADER Directory
 dir_path="/opt/rader"
@@ -15,18 +15,38 @@ else
   sudo chown -R $USER:$USER $dir_path
 fi
 
-# networkcheck install
-sudo wget -O $dir_path/networkcheck.sh https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/Bash/networkcheck.sh
-sudo chmod +x $dir_path/networkcheck.sh
-
-# Cronjob for networkcheck.sh
-if crontab -l | grep -q "$dir_path/networkcheck.sh"; then
-  echo "Cron job already exists"
+# Check if the "dns=none" line exists in NetworkManager.conf
+if grep -q "dns=none" /etc/NetworkManager/NetworkManager.conf; then
+    echo "The 'dns=none' line already exists in NetworkManager.conf."
 else
-  crontab -l > mycron
-  echo "0 */2 * * * $dir_path/networkcheck.sh" >> mycron
-  crontab mycron
-  rm mycron
+    # Backup the original configuration file
+    sudo cp /etc/NetworkManager/NetworkManager.conf /etc/NetworkManager/NetworkManager.conf.bak
+    
+    # Use sed to add the "dns=none" line at the end of the file
+    sudo sed -i '$ a dns=none' /etc/NetworkManager/NetworkManager.conf
+    
+    echo "The 'dns=none' line has been added to NetworkManager.conf."
+fi
 
-  echo "Proceed with installing Labtech"
+# Restart the NetworkManager service
+sudo systemctl restart NetworkManager.service
+
+echo "NetworkManager service has been restarted."
+
+# Pull netman_check.sh script and create daily cronjob
+NETMAN_CHECK="/opt/rader/netman_check.sh"
+NETMAN_CRONJOB="/opt/rader/netman_cronjob"
+NETMAN_URL="https://raw.githubusercontent.com/xBurningGiraffe/Misc.Scripts/main/Bash/netman_check.sh"
+
+# Get script
+sudo wget -O "$NETMAN_CHECK" "$NETMAN_URL"
+
+# Change perms and create cronjob file
+sudo chmod +x "$NETMAN_CHECK"
+sudo echo "0 0 * * * /bin/bash $NETMAN_CHECK" >> sudo tee "$NETMAN_CRONJOB" > /dev/null
+
+# Create cronjob
+sudo crontab "$NETMAN_CRONJOB"
+
+echo "Proceed with installing Labtech"
 fi
