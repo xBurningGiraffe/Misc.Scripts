@@ -2,7 +2,6 @@
 
 import re
 import subprocess
-import sys
 import argparse
 import random
 
@@ -20,11 +19,9 @@ def print_banner():
     Created by: xBurningGiraffe
     https://github.com/xBurningGiraffe
     """
-    # ANSI escape codes for colors
     colors = ["\033[91m", "\033[92m", "\033[93m", "\033[94m", "\033[95m", "\033[96m", "\033[97m"]
     color_end = "\033[0m"
     color = random.choice(colors)
-    
     print(color + banner + color_end)
 
 def run_nmap_scan(nmap_args, output_file):
@@ -38,39 +35,31 @@ def parse_nmap_file(nmap_file):
 
     host_pattern = re.compile(r'Nmap scan report for (.+?) \((.+?)\)')
     ip_pattern = re.compile(r'Nmap scan report for (.+)')
-    os_pattern = re.compile(r'OS details: (.+)')
+    os_pattern = re.compile(r'OS details: (.+)', re.MULTILINE)
     port_pattern = re.compile(r'(\d+)/tcp\s+open\s+(\S+)\s+(.+)')
 
     current_host = {}
     for line in content.split('\n'):
-        host_match = host_pattern.match(line)
-        ip_match = ip_pattern.match(line)
-        os_match = os_pattern.match(line)
-        port_match = port_pattern.match(line)
-
-        if host_match:
+        if 'Nmap scan report for' in line:
             if current_host:
                 hosts.append(current_host)
-                current_host = {}
-            current_host['hostname'] = host_match.group(1)
-            current_host['ip_address'] = host_match.group(2)
-            current_host['os'] = 'N/A'
-            current_host['open_ports'] = []
-            current_host['notes'] = 'N/A'
-        elif ip_match and 'Nmap scan report for' in line:
-            if current_host:
-                hosts.append(current_host)
-                current_host = {}
-            current_host['hostname'] = 'N/A'
-            current_host['ip_address'] = ip_match.group(1)
-            current_host['os'] = 'N/A'
-            current_host['open_ports'] = []
-            current_host['notes'] = 'N/A'
-        if os_match:
-            current_host['os'] = os_match.group(1)
-        if port_match:
-            port_info = f"{port_match.group(1)}/tcp {port_match.group(2)} {port_match.group(3)}"
-            current_host['open_ports'].append(port_info)
+            current_host = {'hostname': 'N/A', 'ip_address': 'N/A', 'os': 'N/A', 'open_ports': [], 'notes': 'N/A'}
+            ip_host_match = ip_pattern.match(line)
+            if ip_host_match:
+                current_host['ip_address'] = ip_host_match.group(1)
+            host_match = host_pattern.match(line)
+            if host_match:
+                current_host['hostname'] = host_match.group(1)
+                current_host['ip_address'] = host_match.group(2)
+        elif 'OS details:' in line:
+            os_match = os_pattern.match(line)
+            if os_match:
+                current_host['os'] = os_match.group(1)
+        elif 'tcp open' in line:
+            port_match = port_pattern.match(line)
+            if port_match:
+                port_info = f"{port_match.group(1)}/tcp {port_match.group(2)} {port_match.group(3)}"
+                current_host['open_ports'].append(port_info)
 
     if current_host:
         hosts.append(current_host)
@@ -83,26 +72,16 @@ def generate_markdown(hosts, output_file):
         file.write("## Discovered Hosts\n")
         file.write("| Hostname | IP Address | OS | Open Ports | Notes |\n")
         file.write("|----------|-------------|----|------------|-------|\n")
-
         for host in hosts:
             ports_list = '<ul>' + ''.join(f"<li>{port}</li>" for port in host['open_ports']) + '</ul>'
             file.write(f"| {host['hostname']} | {host['ip_address']} | {host['os']} | {ports_list} | {host['notes']} |\n")
 
 if __name__ == "__main__":
     print_banner()
-
     parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.')
     parser.add_argument('-o', '--output', default='discovered_hosts.md', help='Output markdown file name (default: discovered_hosts.md)')
     parser.add_argument('nmap_args', nargs=argparse.REMAINDER, help='Arguments to pass to nmap')
-
     args = parser.parse_args()
-
-    # Filter out '-o' and its following argument from nmap_args
-    if '-o' in args.nmap_args:
-        o_index = args.nmap_args.index('-o')
-        if len(args.nmap_args) > o_index+1:
-            args.output = args.nmap_args[o_index+1]
-            args.nmap_args = [arg for i, arg in enumerate(args.nmap_args) if i not in (o_index, o_index+1)]
 
     nmap_output_file = "scan_results.nmap"
     markdown_output_file = args.output
@@ -110,5 +89,4 @@ if __name__ == "__main__":
     run_nmap_scan(args.nmap_args, nmap_output_file)
     hosts = parse_nmap_file(nmap_output_file)
     generate_markdown(hosts, markdown_output_file)
-
     print(f"Markdown file '{markdown_output_file}' has been generated.")
