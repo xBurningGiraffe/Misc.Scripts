@@ -42,4 +42,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 Your Name - xburninggiraffe@gmail..com
-Project Link: https://github.com/xBurningGiraffe/Misc.Scripts/Python/nmapMD
+Project Link: (https://github.com/xBurningGiraffe/Misc.Scripts/tree/main/Python/nmapMD)
