@@ -1,6 +1,7 @@
 import dns.resolver
 import time
 import sys
+import os
 
 def test_dns_server_speed(dns_server, domain="google.com"):
     """
