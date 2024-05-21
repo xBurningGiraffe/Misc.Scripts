@@ -85,21 +85,29 @@ def generate_markdown(hosts, output_file):
         file.write("|----------|-------------|----|------------|-------|\n")
 
         for host in hosts:
-            file.write(f"| {host['hostname']} | {host['ip_address']} | {host['os']} | {', '.join(host['open_ports'])} | {host['notes']} |\n")
+            ports_list = '<ul>' + ''.join(f"<li>{port}</li>" for port in host['open_ports']) + '</ul>'
+            file.write(f"| {host['hostname']} | {host['ip_address']} | {host['os']} | {ports_list} | {host['notes']} |\n")
 
 if __name__ == "__main__":
     print_banner()
 
     parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.')
-    parser.add_argument('nmap_args', nargs='*', help='nmap arguments')
-    parser.add_argument('-o', '--output', default='discovered_hosts.md', help='output markdown file name (default: discovered_hosts.md)')
+    parser.add_argument('-o', '--output', default='discovered_hosts.md', help='Output markdown file name (default: discovered_hosts.md)')
+    parser.add_argument('nmap_args', nargs=argparse.REMAINDER, help='Arguments to pass to nmap')
 
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
+
+    # Filter out '-o' and its following argument from nmap_args
+    if '-o' in args.nmap_args:
+        o_index = args.nmap_args.index('-o')
+        if len(args.nmap_args) > o_index+1:
+            args.output = args.nmap_args[o_index+1]
+            args.nmap_args = [arg for i, arg in enumerate(args.nmap_args) if i not in (o_index, o_index+1)]
 
     nmap_output_file = "scan_results.nmap"
     markdown_output_file = args.output
 
-    run_nmap_scan(unknown, nmap_output_file)
+    run_nmap_scan(args.nmap_args, nmap_output_file)
     hosts = parse_nmap_file(nmap_output_file)
     generate_markdown(hosts, markdown_output_file)
 
