@@ -1,6 +1,5 @@
 
-```markdown
-# Nmap Markdown Report Generator
+# NmapMD
 
 ## Description
 This Python script automates the process of running nmap scans and formats the output into a Markdown file. It's designed to make it easier to document and review the network environments you are analyzing.
@@ -43,6 +42,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 Your Name - xburninggiraffe@gmail..com
-Project Link: https://github.com/xBurningGiraffe/
-
-```
+Project Link: (https://github.com/xBurningGiraffe/Misc.Scripts/tree/main/Python/nmapMD)
