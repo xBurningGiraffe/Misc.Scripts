@@ -4,6 +4,7 @@ import re
 import subprocess
 import argparse
 import random
+import shlex
 
 def print_banner():
     banner = """
@@ -80,13 +81,16 @@ if __name__ == "__main__":
     print_banner()
     parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.')
     parser.add_argument('-o', '--output', default='discovered_hosts.md', help='Output markdown file name (default: discovered_hosts.md)')
-    parser.add_argument('nmap_args', nargs=argparse.REMAINDER, help='Arguments to pass to nmap')
+    parser.add_argument('nmap_args', help='Arguments to pass to nmap, provided as a single string')
     args = parser.parse_args()
 
     nmap_output_file = "scan_results.nmap"
     markdown_output_file = args.output
 
-    run_nmap_scan(args.nmap_args, nmap_output_file)
+    # Split the nmap_args string into a list of arguments
+    nmap_args = shlex.split(args.nmap_args.replace(',', ' '))
+
+    run_nmap_scan(nmap_args, nmap_output_file)
     hosts = parse_nmap_file(nmap_output_file)
     generate_markdown(hosts, markdown_output_file)
     print(f"Markdown file '{markdown_output_file}' has been generated.")
