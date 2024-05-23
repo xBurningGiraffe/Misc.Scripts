@@ -15,8 +15,8 @@ This Python script automates the process of running nmap scans and formats the o
 ## Installation
 Clone this repository to your local machine:
 ```bash
-git clone https://github.com/your-repository/nmap-markdown.git
-cd nmap-markdown
+git clone https://github.com/xBurningGiraffe/Misc.Scripts/Python/nmapMD.git
+cd nmapM,D
 ```
 
 ## Usage
