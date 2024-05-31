@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import nmap
 import argparse
 import random
 import sys
@@ -42,29 +41,15 @@ def print_usage():
 
 def run_nmap_scan(targets, options):
     command = f"nmap {targets} {options}"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     while True:
         output = process.stdout.readline()
+        if output:
+            sys.stdout.write(output)  # Use sys.stdout.write for better performance
+            sys.stdout.flush()  # Flush to ensure it's printed in real-time
         if output == '' and process.poll() is not None:
             break
-        if output:
-            print(output.strip())
-    return process.poll()
-
-def generate_markdown(nm, output_file):
-    with open(output_file, 'w') as file:
-        file.write("# Hostnames and IP Addresses\n\n")
-        file.write("## Discovered Hosts\n")
-        file.write("| Hostname | IP Address | OS | Open Ports | Notes |\n")
-        file.write("|----------|-------------|----|------------|-------|\n")
-        for host in nm.all_hosts():
-            hostname = nm[host].hostname()
-            ip_address = host
-            os = nm[host]['osclass'][0]['osfamily'] if nm[host].has_os() else 'N/A'
-            ports = nm[host]['tcp'].keys()
-            ports_list = '<ul>' + ''.join(f"<li>{port}/tcp</li>" for port in ports) + '</ul>'
-            notes = 'N/A'
-            file.write(f"| {hostname} | {ip_address} | {os} | {ports_list} | {notes} |\n")
+    return process.returncode
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.', add_help=False)
@@ -94,5 +79,5 @@ if __name__ == "__main__":
         markdown_output_file = f"nmapMD_hosts_{random_number}.md"
 
     targets, options = nmap_args[0], ' '.join(nmap_args[1:])
-    run_nmap_scan(targets, options)
-    print(f"Markdown file '{markdown_output_file}' has been generated.")
+    exit_code = run_nmap_scan(targets, options)
+    print(f"Scan completed with exit code {exit_code}. Output was directed to the terminal.")
