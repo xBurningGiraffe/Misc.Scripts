@@ -7,22 +7,22 @@ This Python script automates the process of running nmap scans and formats the o
 ## Features
 - Runs nmap scans with user-defined arguments.
 - Generates a Markdown file that documents discovered hosts, their IP addresses, open ports, and operating system details if available.
-
+- Option for converting a specific .nmap file to the simplified Markdown table format
 ## Requirements
 - Python 3
 - nmap: Must be installed on the system and accessible via the command line.
 
 ## Installation
-Clone this repository to your local machine:
 ```bash
 git clone https://github.com/xBurningGiraffe/Misc.Scripts/Python/nmapMD.git
-cd nmapM,D
+cd nmapMD
 ```
 
 ## Usage
 To use the script, you can pass nmap arguments directly through the command line. For example:
 ```bash
-./nmapMD.py -o output_filename.md 192.168.208.226 -p 135,139,445 -vv
+./nmapMD.py -o output_filename.md -- 192.168.208.226 -p 135,139,445 -vv
+./nmapMD.py -o output_filename.md -- -iL hosts.txt -sC -sV -vv
 ```
 
 This command runs an nmap scan on the IP address `192.168.208.226` with verbose output for ports 135, 139, and 445, and outputs the results to `output_filename.md`.
