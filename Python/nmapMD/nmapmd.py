@@ -52,8 +52,19 @@ def run_nmap_scan(targets, options):
     return process.poll()
 
 def generate_markdown(nm, output_file):
-    # Placeholder for actual Markdown generation logic
-    pass
+    with open(output_file, 'w') as file:
+        file.write("# Hostnames and IP Addresses\n\n")
+        file.write("## Discovered Hosts\n")
+        file.write("| Hostname | IP Address | OS | Open Ports | Notes |\n")
+        file.write("|----------|-------------|----|------------|-------|\n")
+        for host in nm.all_hosts():
+            hostname = nm[host].hostname()
+            ip_address = host
+            os = nm[host]['osclass'][0]['osfamily'] if nm[host].has_os() else 'N/A'
+            ports = nm[host]['tcp'].keys()
+            ports_list = '<ul>' + ''.join(f"<li>{port}/tcp</li>" for port in ports) + '</ul>'
+            notes = 'N/A'
+            file.write(f"| {hostname} | {ip_address} | {os} | {ports_list} | {notes} |\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.', add_help=False)
