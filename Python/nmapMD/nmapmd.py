@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import re
-import subprocess
 import argparse
 import random
+import sys
+import subprocess
 
 def print_banner():
     banner = """
@@ -15,7 +15,7 @@ def print_banner():
  |_| \_|_| |_| |_|\__,_| .__/|_|  |_|_____/ 
                        | |                  
                        |_|               
-                       
+
     Created by: xBurningGiraffe
     https://github.com/xBurningGiraffe
     """
@@ -24,69 +24,60 @@ def print_banner():
     color = random.choice(colors)
     print(color + banner + color_end)
 
-def run_nmap_scan(nmap_args, output_file):
-    command = ["sudo", "nmap"] + nmap_args + ["-oN", output_file]
-    subprocess.run(command, check=True)
+def print_usage():
+    usage = """
+    Usage:
+      nmapMD -o output.md -- nmap arguments
 
-def parse_nmap_file(nmap_file):
-    hosts = []
-    with open(nmap_file, 'r') as file:
-        content = file.read()
+    Options:
+      -o, --output        Specify the output markdown file name.
+      -h, --help          Show this help message and exit.
 
-    host_pattern = re.compile(r'Nmap scan report for (.+?) \((.+?)\)')
-    ip_pattern = re.compile(r'Nmap scan report for (.+)')
-    os_pattern = re.compile(r'OS details: (.+)', re.MULTILINE)
-    port_pattern = re.compile(r'(\d+)/tcp\s+open\s+(\S+)\s+(.+)')
+    Examples:
+      nmapMD -o output.md -- 192.168.1.1 -sV -T4
+      nmapMD -o output.md -- -iL 192_hosts.txt -sC -sV -vv
+    """
+    print(usage)
 
-    current_host = {}
-    for line in content.split('\n'):
-        if 'Nmap scan report for' in line:
-            if current_host:
-                hosts.append(current_host)
-            current_host = {'hostname': 'N/A', 'ip_address': 'N/A', 'os': 'N/A', 'open_ports': [], 'notes': 'N/A'}
-            ip_host_match = ip_pattern.match(line)
-            if ip_host_match:
-                current_host['ip_address'] = ip_host_match.group(1)
-            host_match = host_pattern.match(line)
-            if host_match:
-                current_host['hostname'] = host_match.group(1)
-                current_host['ip_address'] = host_match.group(2)
-        elif 'OS details:' in line:
-            os_match = os_pattern.match(line)
-            if os_match:
-                current_host['os'] = os_match.group(1)
-        elif 'tcp open' in line:
-            port_match = port_pattern.match(line)
-            if port_match:
-                port_info = f"{port_match.group(1)}/tcp {port_match.group(2)} {port_match.group(3)}"
-                current_host['open_ports'].append(port_info)
-
-    if current_host:
-        hosts.append(current_host)
-
-    return hosts
-
-def generate_markdown(hosts, output_file):
-    with open(output_file, 'w') as file:
-        file.write("# Hostnames and IP Addresses\n\n")
-        file.write("## Discovered Hosts\n")
-        file.write("| Hostname | IP Address | OS | Open Ports | Notes |\n")
-        file.write("|----------|-------------|----|------------|-------|\n")
-        for host in hosts:
-            ports_list = '<ul>' + ''.join(f"<li>{port}</li>" for port in host['open_ports']) + '</ul>'
-            file.write(f"| {host['hostname']} | {host['ip_address']} | {host['os']} | {ports_list} | {host['notes']} |\n")
+def run_nmap_scan(targets, options):
+    command = f"nmap {targets} {options}"
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    while True:
+        output = process.stdout.readline()
+        if output:
+            sys.stdout.write(output)  # Use sys.stdout.write for better performance
+            sys.stdout.flush()  # Flush to ensure it's printed in real-time
+        if output == '' and process.poll() is not None:
+            break
+    return process.returncode
 
 if __name__ == "__main__":
-    print_banner()
-    parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.')
-    parser.add_argument('-o', '--output', default='discovered_hosts.md', help='Output markdown file name (default: discovered_hosts.md)')
-    parser.add_argument('nmap_args', nargs=argparse.REMAINDER, help='Arguments to pass to nmap')
+    parser = argparse.ArgumentParser(description='Run nmap scan and output results to a Markdown file.', add_help=False)
+    parser.add_argument('-o', '--output', help='Output markdown file name')
+    parser.add_argument('nmap_args', nargs=argparse.REMAINDER, help='Arguments to pass to nmap. Start with "--" before nmap arguments.')
     args = parser.parse_args()
 
-    nmap_output_file = "scan_results.nmap"
-    markdown_output_file = args.output
+    if '-h' in args.nmap_args or '--help' in args.nmap_args or not sys.argv[1:]:
+        print_banner()
+        print_usage()
+        sys.exit()
 
-    run_nmap_scan(args.nmap_args, nmap_output_file)
-    hosts = parse_nmap_file(nmap_output_file)
-    generate_markdown(hosts, markdown_output_file)
-    print(f"Markdown file '{markdown_output_file}' has been generated.")
+    if not args.nmap_args or args.nmap_args[0] != '--':
+        print_banner()
+        print_usage()
+        sys.exit(1)
+
+    nmap_args = args.nmap_args[1:]
+    if not nmap_args:
+        print("No nmap arguments provided after '--'. Exiting.")
+        sys.exit(1)
+
+    if args.output:
+        markdown_output_file = args.output
+    else:
+        random_number = random.randint(100, 999)
+        markdown_output_file = f"nmapMD_hosts_{random_number}.md"
+
+    targets, options = nmap_args[0], ' '.join(nmap_args[1:])
+    exit_code = run_nmap_scan(targets, options)
+    print(f"Scan completed with exit code {exit_code}. Output was directed to the terminal.")
