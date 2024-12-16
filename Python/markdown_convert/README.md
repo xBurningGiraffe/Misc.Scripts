@@ -27,5 +27,5 @@ Contributions to this project are welcome. Please fork the repository and submit
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
-Your Name - master@xburninggiraffe.com
-Project Link: (https://github.com/xBurningGiraffe/Misc.Scripts/tree/main/Python/markdown_convert)
+master@xburninggiraffe.com
+(https://github.com/xBurningGiraffe/Misc.Scripts/tree/main/Python/markdown_convert)
