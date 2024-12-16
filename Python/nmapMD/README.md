@@ -45,5 +45,5 @@ Contributions to this project are welcome. Please fork the repository and submit
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
-Your Name - xburninggiraffe@gmail..com
+Your Name - master@xburninggiraffe.com
 Project Link: (https://github.com/xBurningGiraffe/Misc.Scripts/tree/main/Python/nmapMD)
